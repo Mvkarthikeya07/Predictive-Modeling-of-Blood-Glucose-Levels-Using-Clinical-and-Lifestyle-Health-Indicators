@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Glucose Prediction</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>🩸 Glucose Prediction System</h2>
+
+    <form action="/predict" method="POST">
+
+        <label>Gender</label>
+        <select name="male">
+            <option value="1">Male</option>
+            <option value="0">Female</option>
+        </select>
+
+        <input type="number" name="age" placeholder="Age" required>
+
+        <label>Current Smoker?</label>
+        <select name="currentSmoker">
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+        </select>
+
+        <input type="number" step="any" name="cigsPerDay" placeholder="Cigarettes per Day">
+
+        <label>On BP Medication?</label>
+        <select name="BPMeds">
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+        </select>
+
+        <label>Hypertension?</label>
+        <select name="prevalentHyp">
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+        </select>
+
+        <label>Diabetes?</label>
+        <select name="diabetes">
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+        </select>
+
+        <input type="number" step="any" name="totChol" placeholder="Total Cholesterol" required>
+        <input type="number" step="any" name="sysBP" placeholder="Systolic BP" required>
+        <input type="number" step="any" name="diaBP" placeholder="Diastolic BP" required>
+        <input type="number" step="any" name="BMI" placeholder="BMI" required>
+        <input type="number" step="any" name="heartRate" placeholder="Heart Rate" required>
+
+        <button type="submit">Predict Glucose</button>
+    </form>
+</div>
+</body>
+</html>

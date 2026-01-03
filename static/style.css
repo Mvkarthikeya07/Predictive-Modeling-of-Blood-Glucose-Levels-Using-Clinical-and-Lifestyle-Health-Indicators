@@ -1,0 +1,38 @@
+body {
+    font-family: Arial;
+    background-color: #eef2f3;
+}
+
+.container {
+    width: 450px;
+    margin: 60px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+input, select {
+    width: 95%;
+    padding: 8px;
+    margin: 6px 0;
+}
+
+button {
+    background-color: #c0392b;
+    color: white;
+    padding: 10px;
+    width: 100%;
+    border: none;
+}
+
+.result {
+    font-size: 24px;
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+a {
+    display: block;
+    margin-top: 15px;
+    text-align: center;
+}
