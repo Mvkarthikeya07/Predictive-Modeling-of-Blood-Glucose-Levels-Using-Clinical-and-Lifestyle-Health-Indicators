@@ -1,4 +1,5 @@
-🩸 Glucose Prediction System using Machine Learning
+🩸 A-Machine-Learning-Based-Framework-for-Blood-Glucose-Level-Prediction-Using-Clinical-Health-Data
+
 📌 Project Overview
 
 This project presents an end-to-end Machine Learning system for predicting blood glucose levels using clinical and lifestyle data derived from the Framingham Heart Study dataset. The system integrates data preprocessing, supervised regression modeling, performance evaluation, and web-based deployment, demonstrating the practical application of Machine Learning in healthcare analytics.
