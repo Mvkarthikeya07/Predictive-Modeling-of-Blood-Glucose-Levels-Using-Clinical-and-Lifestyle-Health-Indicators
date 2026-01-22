@@ -177,6 +177,48 @@ Machine Learning: Supervised Regression
 
 Web Framework: Flask
 
+🏢 Industry Exposure & Internship Experience
+
+Machine Learning Intern
+Organization: Skillfied Mentor (Edgenius Skillfied Mentor Pvt. Ltd)
+Duration: December 2025 – January 2026 (1 Month)
+
+This project incorporates the applied Machine Learning practices and professional standards developed during my Machine Learning internship at Skillfied Mentor, with a strong focus on healthcare-oriented data analysis and regression modeling.
+
+🔍 Internship Relevance to This Project
+
+Applied supervised regression techniques to real-world, multi-feature clinical datasets
+
+Gained hands-on experience in health data preprocessing, including:
+
+Handling missing medical values
+
+Preventing data leakage through careful feature selection
+
+Scaling numerical clinical variables using StandardScaler
+
+Strengthened understanding of model interpretability, a critical requirement in medical and clinical analytics
+
+Worked with model evaluation metrics (R², RMSE) to assess predictive performance and generalization
+
+Followed industry-standard ML workflows, including:
+
+Clean separation of training and inference logic
+
+Reproducible model training pipelines
+
+Deployment-oriented thinking using Flask web applications
+
+Developed professional discipline in:
+
+Writing clear and maintainable ML code
+
+Structuring healthcare ML projects for academic and industrial review
+
+Translating statistical ML models into accessible decision-support tools
+
+The internship experience directly influenced the design philosophy of this project, emphasizing data integrity, model transparency, and real-world applicability in healthcare-focused Machine Learning systems.
+
 🚀 Future Enhancements
 
 Classification of glucose levels into clinical risk categories
