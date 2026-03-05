@@ -119,7 +119,7 @@ After submission, the system displays the predicted blood glucose level in mg/dL
 <img width="1366" height="768" alt="Screenshot (49)" src="https://github.com/user-attachments/assets/0d0138ea-c7ac-41d5-86d2-575b5849d7e1" />
 
 screenshots/prediction_result.png
-
+````
 📁 Project Structure
 Glucose_Prediction_System/
 │
@@ -145,7 +145,7 @@ Glucose_Prediction_System/
 ├── app.py
 ├── requirements.txt
 └── README.md
-
+````
 ▶️ How to Run the Project
 Step 1: Install dependencies
 pip install -r requirements.txt
