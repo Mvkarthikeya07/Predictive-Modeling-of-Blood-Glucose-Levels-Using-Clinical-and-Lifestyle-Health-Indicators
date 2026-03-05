@@ -1,4 +1,4 @@
-🩸 Predictive Modeling of Blood Glucose Levels Using Clinical and Lifestyle Health Indicators
+ 🩸 Predictive Modeling of Blood Glucose Levels Using Clinical and Lifestyle Health Indicators
 
 📌 Project Overview
 
