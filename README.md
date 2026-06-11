@@ -1,472 +1,260 @@
-<div align="center">
+ 🩸 Predictive Modeling of Blood Glucose Levels Using Clinical and Lifestyle Health Indicators
 
-<img src="https://img.shields.io/badge/Python-3.9%2B-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
-<img src="https://img.shields.io/badge/Flask-2.x-000000?style=for-the-badge&logo=flask&logoColor=white"/>
-<img src="https://img.shields.io/badge/scikit--learn-ML-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white"/>
-<img src="https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge"/>
-<img src="https://img.shields.io/badge/Status-Production%20Ready-22C55E?style=for-the-badge"/>
+📌 Project Overview
 
-# 🩸 Blood Glucose Level Prediction System
-### *Clinical Intelligence Through Machine Learning*
+This project presents an end-to-end Machine Learning system for predicting blood glucose levels using clinical and lifestyle data derived from the Framingham Heart Study dataset. The system integrates data preprocessing, supervised regression modeling, performance evaluation, and web-based deployment, demonstrating the practical application of Machine Learning in healthcare analytics.
 
-> An end-to-end supervised regression system that predicts blood glucose levels from clinical and lifestyle biomarkers — powered by the **Framingham Heart Study** dataset and deployed as a real-time Flask web application.
+The project emphasizes statistical learning, proper feature selection, and model generalization, deliberately avoiding rule-based or lookup-based approaches. A lightweight Flask web application enables real-time glucose prediction, making the system accessible to non-technical users.
 
-[**Live Demo**](#️-web-application) · [**Model Comparison**](#-model-comparison--benchmarking) · [**Quick Start**](#-quick-start) · [**Results**](#-results--evaluation)
+🎯 Objectives
 
----
+To analyze real-world clinical data and identify key factors influencing blood glucose levels
 
-</div>
+To design and train a supervised regression model for continuous glucose prediction
 
-## 📋 Table of Contents
+To evaluate model performance using standard statistical metrics
 
-- [Project Overview](#-project-overview)
-- [Dataset](#-dataset)
-- [Methodology](#️-methodology)
-- [Model Comparison & Benchmarking](#-model-comparison--benchmarking)
-- [Feature Importance Analysis](#-feature-importance-analysis)
-- [Web Application](#️-web-application)
-- [Project Structure](#-project-structure)
-- [Quick Start](#-quick-start)
-- [Results & Evaluation](#-results--evaluation)
-- [Future Roadmap](#-future-roadmap)
-- [Author](#-author)
+To deploy the trained model as a user-friendly web application
 
----
+🧠 Dataset Description
 
-## 🔬 Project Overview
+Dataset Source: Framingham Heart Study
 
-This project builds a **production-grade machine learning pipeline** for predicting blood glucose levels (mg/dL) using 12 clinical and lifestyle indicators. The system addresses the critical healthcare challenge of early glycemic risk detection by applying statistical learning on real-world epidemiological data.
+Domain: Clinical and epidemiological health data
 
-**Key Contributions:**
-- Rigorous feature engineering with explicit **data leakage prevention**
-- Multi-model benchmark across 6 regression algorithms
-- Bias–variance analysis and cross-validation for generalization confidence
-- Full-stack deployment via a clean, minimal **Flask REST interface**
-- Healthcare-grade interpretability using **Linear Regression** as the production model
+Number of Records: ~4,200 patients
 
-**Domain:** Healthcare Analytics · Preventive Medicine · Epidemiology  
-**Task Type:** Supervised Regression (continuous output)  
-**Target Variable:** `glucose` — fasting blood glucose in mg/dL
+Data Type: Numerical and binary medical features
 
----
+🎯 Target Variable
 
-## 📊 Dataset
+glucose — Blood glucose level (mg/dL)
 
-| Property | Value |
-|---|---|
-| **Source** | [Framingham Heart Study](https://www.kaggle.com/datasets/aasheesh200/framingham-heart-study-dataset) |
-| **Domain** | Clinical & Epidemiological |
-| **Total Records** | 4,240 (3,658 after cleaning) |
-| **Features Used** | 12 |
-| **Target Range** | 40 – 394 mg/dL |
-| **Target Mean** | 81.85 mg/dL |
-| **Target Std Dev** | 23.90 mg/dL |
+🔢 Input Features Used
 
-### Input Features
+Demographic: male, age
 
-| Feature | Type | Description |
-|---|---|---|
-| `age` | Continuous | Patient age in years |
-| `male` | Binary | Sex (1 = Male, 0 = Female) |
-| `currentSmoker` | Binary | Active smoking status |
-| `cigsPerDay` | Continuous | Cigarettes smoked per day |
-| `BPMeds` | Binary | Blood pressure medication usage |
-| `prevalentHyp` | Binary | History of hypertension |
-| `diabetes` | Binary | Diagnosed diabetes status |
-| `totChol` | Continuous | Total cholesterol (mg/dL) |
-| `sysBP` | Continuous | Systolic blood pressure (mmHg) |
-| `diaBP` | Continuous | Diastolic blood pressure (mmHg) |
-| `BMI` | Continuous | Body mass index (kg/m²) |
-| `heartRate` | Continuous | Resting heart rate (bpm) |
+Lifestyle: currentSmoker, cigsPerDay
 
-> ⚠️ **Data Leakage Prevention:** `TenYearCHD` (outcome variable) was deliberately excluded from features to prevent contamination of the predictive signal and ensure valid real-world generalization.
+Medical history: BPMeds, prevalentHyp, diabetes
 
----
+Clinical measurements: totChol, sysBP, diaBP, BMI, heartRate
 
-## ⚙️ Methodology
+Outcome-based variables such as TenYearCHD were intentionally excluded to prevent data leakage and ensure valid generalization.
 
-```
-Raw CSV Data
-    │
-    ▼
-┌─────────────────────────────────┐
-│  1. Data Preprocessing          │
-│     • Drop missing values       │
-│     • Feature selection (12)    │
-│     • Leakage audit             │
-└──────────────┬──────────────────┘
-               │
-               ▼
-┌─────────────────────────────────┐
-│  2. Feature Engineering         │
-│     • StandardScaler (μ=0,σ=1)  │
-│     • Train / Test split 80/20  │
-└──────────────┬──────────────────┘
-               │
-               ▼
-┌─────────────────────────────────┐
-│  3. Multi-Model Training        │
-│     • 6 regression algorithms   │
-│     • 5-fold cross-validation   │
-└──────────────┬──────────────────┘
-               │
-               ▼
-┌─────────────────────────────────┐
-│  4. Evaluation                  │
-│     • R², RMSE, MAE             │
-│     • CV R² for generalization  │
-└──────────────┬──────────────────┘
-               │
-               ▼
-┌─────────────────────────────────┐
-│  5. Deployment (Flask)          │
-│     • Real-time inference       │
-│     • StandardScaler pipeline   │
-└─────────────────────────────────┘
-```
+⚙️ Methodology
+1️⃣ Data Preprocessing
 
----
+Removal of missing values
 
-## 🏆 Model Comparison & Benchmarking
+Selection of medically relevant and non-leaking features
 
-All six models were trained on identical splits (80/20, `random_state=42`) with the same `StandardScaler`-normalized features and evaluated using three metrics plus 5-fold cross-validation R².
+Feature scaling using StandardScaler to normalize input distributions
 
-### Results Table
+2️⃣ Model Selection
 
-| Model | R² Score | RMSE (mg/dL) | MAE (mg/dL) | CV R² (5-fold) |
-|---|:---:|:---:|:---:|:---:|
-| 🥇 **Linear Regression** | **0.4824** | **20.75** | **11.47** | 0.3225 |
-| 🥈 **Ridge Regression** | 0.4823 | 20.75 | 11.47 | **0.3226** |
-| 🥉 **Lasso Regression** | 0.4807 | 20.78 | 11.48 | 0.3243 |
-| Random Forest | 0.4865 | 20.66 | 11.70 | 0.1596 |
-| Gradient Boosting | 0.3336 | 23.54 | 12.00 | 0.2250 |
-| Decision Tree | 0.3158 | 23.85 | 12.14 | 0.0190 |
+Linear Regression was selected as the baseline model due to:
 
-> **Metrics Explained:**
-> - **R²** — Proportion of variance explained (higher = better; max 1.0)
-> - **RMSE** — Root Mean Squared Error in mg/dL (lower = better)
-> - **MAE** — Mean Absolute Error in mg/dL (lower = better)
-> - **CV R²** — Cross-validation R² measuring generalization (higher = better)
+Interpretability in medical contexts
 
-### Key Insights
+Suitability for continuous outcome prediction
 
-**Linear Regression was selected as the production model** for the following reasons:
+Statistical transparency and simplicity
 
-1. **Competitive accuracy** — achieves R² of 0.4824, near-identical to Random Forest (0.4865) on test data.
-2. **Superior generalization** — CV R² of **0.3225** vs. Random Forest's **0.1596**, indicating Linear Regression overfits far less.
-3. **Clinical interpretability** — Each coefficient has direct medical meaning; critical in healthcare deployments.
-4. **Stable predictions** — Tree-based models show a large gap between test R² and CV R², suggesting overfitting. Linear models remain consistent.
+3️⃣ Training & Evaluation
 
-> **Random Forest had a slightly higher test R² but its CV R² was less than half that of Linear Regression**, exposing significant overfitting on this dataset size (~3,600 records). For healthcare applications, **generalization reliability outweighs marginal accuracy gains**.
+Dataset split: 80% training / 20% testing
 
-### Performance Visualization
+Evaluation metrics:
 
-```
-R² Score Comparison (Test Set)
-─────────────────────────────────────────────────────────
-Linear Regression  ████████████████████████████  0.4824 ✅ DEPLOYED
-Ridge Regression   ████████████████████████████  0.4823
-Lasso Regression   ███████████████████████████░  0.4807
-Random Forest      ████████████████████████████  0.4865
-Gradient Boosting  ████████████████████░░░░░░░░  0.3336
-Decision Tree      ███████████████████░░░░░░░░░  0.3158
+R² Score (explained variance)
 
-CV R² Comparison (Generalization — 5-Fold)
-─────────────────────────────────────────────────────────
-Linear Regression  ████████████████████  0.3225 ✅ BEST
-Ridge Regression   ████████████████████  0.3226
-Lasso Regression   ████████████████████  0.3243
-Gradient Boosting  █████████████░░░░░░░  0.2250
-Random Forest      ██████████░░░░░░░░░░  0.1596  ⚠️ Overfitting
-Decision Tree      █░░░░░░░░░░░░░░░░░░░  0.0190  ⚠️ Severe Overfitting
-```
+Root Mean Squared Error (RMSE)
 
----
+The model demonstrates stable predictive performance without overfitting, indicating an appropriate bias–variance trade-off.
 
-## 📈 Feature Importance Analysis
+🌐 System Architecture
+User Input (Web Interface)
+        ↓
+Feature Scaling (StandardScaler)
+        ↓
+Trained Regression Model
+        ↓
+Glucose Level Prediction
+        ↓
+Result Display (Web Interface)
 
-Derived from Random Forest feature importances (100 trees, `random_state=42`):
+🖥️ Web Application
 
-| Rank | Feature | Importance | Interpretation |
-|:---:|---|:---:|---|
-| 1 | `diabetes` | **0.3320** | Strongest single predictor; direct glycemic link |
-| 2 | `sysBP` | 0.1233 | Systolic BP reflects vascular-metabolic stress |
-| 3 | `BMI` | 0.1164 | Adiposity drives insulin resistance |
-| 4 | `diaBP` | 0.1128 | Diastolic BP correlates with metabolic syndrome |
-| 5 | `age` | 0.0931 | Age-related glycemic dysregulation |
-| 6 | `totChol` | 0.0883 | Cholesterol linked to metabolic disorder |
-| 7 | `heartRate` | 0.0751 | Autonomic nervous system–glucose axis |
-| 8 | `cigsPerDay` | 0.0277 | Smoking-induced insulin resistance |
-| 9 | `male` | 0.0117 | Sex-based metabolic differences |
-| 10 | `prevalentHyp` | 0.0073 | Hypertension history |
-| 11 | `BPMeds` | 0.0067 | Medication effects on glucose |
-| 12 | `currentSmoker` | 0.0057 | Binary smoking status |
+The trained model is deployed using Flask, providing a clean and minimal interface where users can enter patient health parameters and obtain an immediate glucose prediction.
 
-```
-Feature Importance Bar Chart
-─────────────────────────────────────────────────────────
-diabetes       ████████████████████████████████░  33.2%
-sysBP          ████████████░░░░░░░░░░░░░░░░░░░░░  12.3%
-BMI            ███████████░░░░░░░░░░░░░░░░░░░░░░  11.6%
-diaBP          ███████████░░░░░░░░░░░░░░░░░░░░░░  11.3%
-age            █████████░░░░░░░░░░░░░░░░░░░░░░░░   9.3%
-totChol        ████████░░░░░░░░░░░░░░░░░░░░░░░░░   8.8%
-heartRate      ███████░░░░░░░░░░░░░░░░░░░░░░░░░░   7.5%
-cigsPerDay     ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░   2.8%
-```
+Key Characteristics
 
-> **Clinical Takeaway:** Diabetes status, blood pressure, and BMI collectively account for ~57% of predictive signal. This aligns strongly with established medical literature on glycemic control factors.
+Modular backend design
 
----
+Clear separation between training and inference
 
-## 🖥️ Web Application
+Lightweight and easily deployable
 
-The trained model is served through a lightweight **Flask** web interface, allowing real-time inference without any ML knowledge.
+Extensible for future clinical analytics features
 
-### System Architecture
+🖼️ Screenshots & Demonstration
 
-```
-User (Browser)
-     │
-     │  HTTP POST /predict
-     ▼
-┌──────────────────────┐
-│   Flask App (app.py) │
-│  ┌────────────────┐  │
-│  │ Form Parsing   │  │
-│  │ Type Casting   │  │
-│  └───────┬────────┘  │
-│          ▼           │
-│  ┌────────────────┐  │
-│  │StandardScaler  │  │  ← Loaded from glucose_model.pkl
-│  │  Transform     │  │
-│  └───────┬────────┘  │
-│          ▼           │
-│  ┌────────────────┐  │
-│  │Linear Regression│ │  ← Loaded from glucose_model.pkl
-│  │  .predict()    │  │
-│  └───────┬────────┘  │
-└──────────┼───────────┘
-           │
-           ▼
-    Result: XX.XX mg/dL
-     Displayed to User
-```
+This section provides visual confirmation of the successful execution of the project and the integration between Machine Learning and web deployment.
 
-### Screenshots
+1️⃣ Home Page – Input Interface
 
-#### Home Page — Patient Input Interface
+The home page allows users to input demographic, lifestyle, and clinical parameters required by the model.
 
-The input form accepts all 12 clinical parameters and provides an immediate prediction on submission.
+<img width="1366" height="768" alt="Screenshot (50)" src="https://github.com/user-attachments/assets/a72ad146-5bcf-40cc-8084-bdd02edf6580" />
 
-> 📸 *Place your screenshot here:* `screenshots/home_page.png`
+<img width="1366" height="768" alt="Screenshot (48)" src="https://github.com/user-attachments/assets/82ee22b2-1894-4d4f-9292-e2123842f56a" />
 
-```
-┌─────────────────────────────────────────────────┐
-│          Blood Glucose Prediction System         │
-├─────────────────────────────────────────────────┤
-│  Age: [    ]    Sex: [Male ▼]    BMI: [    ]   │
-│  Systolic BP: [    ]  Diastolic BP: [    ]      │
-│  Total Cholesterol: [    ]  Heart Rate: [    ]  │
-│  Smoker: [Yes ▼]  Cigs/Day: [    ]             │
-│  Hypertension: [Yes ▼]  BP Meds: [Yes ▼]       │
-│  Diabetes: [Yes ▼]                              │
-│                                                 │
-│              [ Predict Glucose ]                │
-└─────────────────────────────────────────────────┘
-```
+screenshots/home_page.png
 
-#### Prediction Result Page
+2️⃣ Prediction Result Page
 
-After submission, the predicted blood glucose value is returned in mg/dL with clear formatting.
+After submission, the system displays the predicted blood glucose level in mg/dL, ensuring clarity and interpretability.
 
-> 📸 *Place your screenshot here:* `screenshots/prediction_result.png`
+<img width="1366" height="768" alt="Screenshot (49)" src="https://github.com/user-attachments/assets/0d0138ea-c7ac-41d5-86d2-575b5849d7e1" />
 
-```
-┌─────────────────────────────────────────────────┐
-│            Prediction Result                    │
-├─────────────────────────────────────────────────┤
-│                                                 │
-│    Predicted Blood Glucose Level:               │
-│                                                 │
-│              🩸  84.37 mg/dL                   │
-│                                                 │
-│         [ ← Make Another Prediction ]          │
-└─────────────────────────────────────────────────┘
-```
-
----
-
-## 📁 Project Structure
-
-```
+screenshots/prediction_result.png
+````
+📁 Project Structure
 Glucose_Prediction_System/
 │
-├── 📂 dataset/
-│   └── framingham.csv              # Framingham Heart Study data (4,240 records)
+├── dataset/
+│   └── framingham.csv
 │
-├── 📂 model/
-│   └── glucose_model.pkl           # Serialized (LinearRegression + StandardScaler)
+├── model/
+│   └── glucose_model.pkl
 │
-├── 📂 static/
-│   └── style.css                   # Frontend styling
+├── static/
+│   └── style.css
 │
-├── 📂 templates/
-│   ├── index.html                  # Patient input form
-│   └── results.html                # Prediction result display
+├── templates/
+│   ├── index.html
+│   └── results.html
 │
-├── 📂 screenshots/
-│   ├── home_page.png               # Input interface screenshot
-│   ├── prediction_result.png       # Output page screenshot
-│   └── model_training_output.png   # Training console output
+├── screenshots/
+│   ├── home_page.png
+│   ├── prediction_result.png
+│   └── model_training_output.png
 │
-├── 🐍 train_model.py               # Model training & serialization pipeline
-├── 🐍 app.py                       # Flask inference server
-├── 📄 requirements.txt             # Python dependencies
-├── 📄 README.md                    # This file
-└── 📄 LICENSE                      # MIT License
-```
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Python 3.9+
-- pip
-
-### Installation & Run
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/Mvkarthikeya07/Predictive-Modeling-of-Blood-Glucose-Levels-Using-Clinical-and-Lifestyle-Health-Indicators.git
-cd Predictive-Modeling-of-Blood-Glucose-Levels
-
-# 2. Install dependencies
+├── train_model.py
+├── app.py
+├── requirements.txt
+└── README.md
+````
+▶️ How to Run the Project
+Step 1: Install dependencies
 pip install -r requirements.txt
 
-# 3. Train the model (generates model/glucose_model.pkl)
+Step 2: Train the model
 python train_model.py
 
-# Expected Output:
-# R² Score: 0.482
-# RMSE: 20.75
-# ✅ Model trained and saved successfully
-
-# 4. Launch the web application
+Step 3: Run the web application
 python app.py
 
-# 5. Open in browser
-# http://127.0.0.1:5000/
-```
+Step 4: Open in browser
+http://127.0.0.1:5000/
 
-### Requirements
+📊 Output Description
 
-```
-flask
-pandas
-numpy
-scikit-learn
-```
+Output Type: Continuous numerical value
 
----
+Unit: mg/dL
 
-## 📉 Results & Evaluation
+Purpose: Estimation of blood glucose levels for analytical and educational use
 
-### Final Model: Linear Regression
+🔬 Technology Stack
 
-| Metric | Value | Interpretation |
-|---|---|---|
-| **R² Score** | `0.4824` | Model explains ~48% of glucose variance |
-| **RMSE** | `20.75 mg/dL` | Average prediction error magnitude |
-| **MAE** | `11.47 mg/dL` | Median absolute deviation from true value |
-| **CV R² (5-fold)** | `0.3225` | Stable generalization across unseen data |
-| **Train / Test Split** | `80% / 20%` | 2,926 train · 732 test samples |
+Language: Python
 
-### Interpretation
+Libraries: Pandas, NumPy, Scikit-learn
 
-The R² of ~0.48 is **clinically meaningful and expected** given:
+Machine Learning: Supervised Regression
 
-1. Blood glucose is influenced by factors **not present in the dataset** (diet, medications, genetics, time of measurement, physical activity)
-2. The Framingham dataset was not designed as a glycemic prediction dataset — its primary focus is cardiovascular risk
-3. Linear models achieve near-identical accuracy to complex ensembles, confirming the relationship between these features and glucose is predominantly **linear**
-4. High CV R² stability (0.32 across 5 folds) confirms the model is **not memorizing** the training data
+Web Framework: Flask
 
----
+🏢 Industry Exposure & Internship Experience
 
-## 🔭 Future Roadmap
+Machine Learning Intern
+Organization: Skillfied Mentor (Edgenius Skillfied Mentor Pvt. Ltd)
+Duration: December 2025 – January 2026 (1 Month)
 
-| Enhancement | Priority | Description |
-|---|:---:|---|
-| Advanced models (XGBoost, SVR) | 🔴 High | Tune hyperparameters on extended feature sets |
-| Glucose risk classification | 🔴 High | Normal / Prediabetic / Diabetic tier labeling |
-| SHAP explainability | 🟡 Medium | Per-prediction feature attribution for clinicians |
-| Extended feature set | 🟡 Medium | Add HbA1c, dietary data, physical activity |
-| Cloud deployment | 🟡 Medium | Deploy on Render or Railway |
-| REST API (JSON) | 🟢 Low | Programmatic access for downstream integrations |
-| Docker containerization | 🟢 Low | Reproducible deployment across environments |
+This project incorporates the applied Machine Learning practices and professional standards developed during my Machine Learning internship at Skillfied Mentor, with a strong focus on healthcare-oriented data analysis and regression modeling.
 
----
+🔍 Internship Relevance to This Project
 
-## 🛠️ Technology Stack
+Applied supervised regression techniques to real-world, multi-feature clinical datasets
 
-<div align="center">
+Gained hands-on experience in health data preprocessing, including:
 
-| Layer | Technology |
-|---|---|
-| **Language** | Python 3.9+ |
-| **Data Processing** | Pandas, NumPy |
-| **Machine Learning** | Scikit-learn |
-| **Web Framework** | Flask |
-| **Serialization** | Pickle |
-| **Dataset** | Framingham Heart Study (CSV) |
+Handling missing medical values
 
-</div>
+Preventing data leakage through careful feature selection
 
----
+Scaling numerical clinical variables using StandardScaler
 
-## 🎓 Academic & Professional Context
+Strengthened understanding of model interpretability, a critical requirement in medical and clinical analytics
 
-This project was developed as part of a **Machine Learning Internship** at **Skillfied Mentor (Edgenius Skillfied Mentor Pvt. Ltd)** — December 2025 to January 2026.
+Worked with model evaluation metrics (R², RMSE) to assess predictive performance and generalization
 
-The internship provided hands-on experience in:
-- Healthcare-oriented data preprocessing (missing value handling, leakage prevention)
-- Regression modeling and metric-driven model selection
-- End-to-end ML pipeline design for clinical applications
-- Deployment of trained models via Flask web interfaces
+Followed industry-standard ML workflows, including:
 
-This project demonstrates readiness for **research-oriented academic evaluation**, **technical project defense**, and **data science roles in healthcare analytics**.
+Clean separation of training and inference logic
 
----
+Reproducible model training pipelines
 
-## 👤 Author
+Deployment-oriented thinking using Flask web applications
 
-<div align="center">
+Developed professional discipline in:
 
-**M V Karthikeya**  
-*B.Tech — Computer Science (AI & ML)*
+Writing clear and maintainable ML code
 
-[![GitHub](https://img.shields.io/badge/GitHub-Mvkarthikeya07-181717?style=for-the-badge&logo=github)](https://github.com/Mvkarthikeya07)
+Structuring healthcare ML projects for academic and industrial review
 
-</div>
+Translating statistical ML models into accessible decision-support tools
 
----
+The internship experience directly influenced the design philosophy of this project, emphasizing data integrity, model transparency, and real-world applicability in healthcare-focused Machine Learning systems.
 
-## 📜 License
+🚀 Future Enhancements
 
-This project is released under the **MIT License** and is intended strictly for **academic and educational purposes**.
+Classification of glucose levels into clinical risk categories
 
-```
-MIT License — Copyright (c) 2026 M V Karthikeya
-```
+Comparison with advanced regression models (Ridge, Lasso, Random Forest)
 
----
+Feature importance analysis and visualization
 
-<div align="center">
+Cloud deployment (Render / Railway)
 
-*Built with precision for healthcare analytics · Framingham Heart Study · Python · Flask*
+Integration of explainable AI techniques
 
-⭐ **Star this repo** if it helped you — it supports continued development!
+🎓 Academic & Professional Relevance
 
-</div>
+This project demonstrates:
+
+Strong understanding of Machine Learning fundamentals
+
+Practical handling of real-world medical datasets
+
+Awareness of evaluation rigor and data leakage
+
+Ability to build and deploy end-to-end ML systems
+
+It is well-suited for:
+
+Research-oriented academic evaluation
+
+Technical interviews and project defense
+
+👤 Author
+
+M V Karthikeya
+Computer Science (AI & ML)
+GitHub: https://github.com/Mvkarthikeya07
+
+📜 License
+
+This project is released under the MIT License and is intended strictly for academic and educational purposes.
