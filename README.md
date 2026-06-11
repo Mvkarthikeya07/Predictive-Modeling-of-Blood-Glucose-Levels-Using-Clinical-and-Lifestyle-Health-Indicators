@@ -2,9 +2,6 @@
 
 <br/>
 
-```
-```
-
 ### 🩸 Predictive Modeling of Blood Glucose Levels
 #### *Clinical Intelligence · Machine Learning · Real-Time Deployment*
 
