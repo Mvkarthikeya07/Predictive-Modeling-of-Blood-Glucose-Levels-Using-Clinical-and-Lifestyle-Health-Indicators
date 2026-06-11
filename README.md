@@ -40,7 +40,7 @@ Blood glucose regulation is a central indicator of metabolic health, with abnorm
 This project builds a complete end-to-end ML pipeline that:
 
 - Preprocesses real-world clinical data — handling missingness, preventing label leakage, and normalizing feature distributions via `StandardScaler`
-- Trains a **supervised regression model** to predict continuous blood glucose (mg/dL) directly from patient health parameters
+- Trains a **supervised regression model** to predict continuous blood glucose (mg/dL) directly from 12 patient health parameters
 - Evaluates generalization using **R² Score** and **RMSE** on a held-out 20% test split
 - Deploys the trained `(model, scaler)` pair as a **Flask web application** for real-time single-patient inference
 
@@ -50,23 +50,23 @@ This project builds a complete end-to-end ML pipeline that:
 
 ## 📸 Application Screenshots
 
-### Home Page — Patient Input Interface
+### 1️⃣ Home Page — Patient Input Interface (Full View)
 
-The input form accepts 12 clinical and lifestyle parameters grouped by category: Demographic, Lifestyle, Medical History, and Clinical Measurements. All fields map directly to the features used during training.
+The input form accepts all 12 clinical and lifestyle parameters. Fields are grouped by category — Demographic, Lifestyle, Medical History, and Clinical Measurements — and map directly to the features used during training.
 
-> *(See `screenshots/home_page.png`)*
+<img width="1366" height="768" alt="Home Page Full View" src="https://github.com/user-attachments/assets/a72ad146-5bcf-40cc-8084-bdd02edf6580" />
 
-### Prediction Result Page
+### 2️⃣ Home Page — Form Fields Detail
 
-After submission, the system scales the input features using the stored `StandardScaler`, passes them through the trained `LinearRegression` model, and renders the predicted glucose level in mg/dL on the results page.
+Close-up of the structured input fields showing parameter labels, input types, and layout. All 12 model features are exposed clearly to the user.
 
-> *(See `screenshots/prediction_result.png`)*
+<img width="1366" height="768" alt="Home Page Form Detail" src="https://github.com/user-attachments/assets/82ee22b2-1894-4d4f-9292-e2123842f56a" />
 
-### Model Training Output
+### 3️⃣ Prediction Result Page
 
-Console output from `train_model.py` showing R² Score, RMSE, and confirmation of successful model serialization to `model/glucose_model.pkl`.
+After submission, the system scales the input using the stored `StandardScaler`, passes it through the trained `LinearRegression` model, and renders the predicted blood glucose level in **mg/dL** on the results page.
 
-> *(See `screenshots/model_training_output.png`)*
+<img width="1366" height="768" alt="Prediction Result Page" src="https://github.com/user-attachments/assets/0d0138ea-c7ac-41d5-86d2-575b5849d7e1" />
 
 ---
 
@@ -123,15 +123,15 @@ Closed-form solution:
   β = (XᵀX)⁻¹ Xᵀy
 ```
 
-**Why Linear Regression as baseline:**
+**Why Linear Regression as the baseline:**
 
 | Property | Relevance to Clinical Prediction |
 |---|---|
 | Fully interpretable coefficients | Each β directly quantifies a feature's marginal effect on glucose |
-| No hyperparameter tuning required | Deterministic closed-form fit; reproducible across runs |
-| Fast training and inference | Millisecond-level prediction — suitable for real-time web deployment |
-| Clinically transparent | Healthcare contexts require explainable predictions, not black-box outputs |
-| Baseline for comparison | Establishes performance floor for future regularized / ensemble models |
+| No hyperparameter tuning required | Deterministic closed-form fit; reproducible across every run |
+| Millisecond inference | Suitable for real-time web deployment with zero latency overhead |
+| Clinically transparent | Healthcare contexts demand explainable predictions, not black-box outputs |
+| Establishes performance floor | Baseline for benchmarking against regularized and ensemble models |
 
 ### StandardScaler — Feature Normalization
 
@@ -141,14 +141,14 @@ Before regression, all 12 features are normalized using zero-mean unit-variance 
 x_scaled = (x − μ) / σ
 
 Where:
-  μ  = feature mean computed on X_train
-  σ  = feature standard deviation computed on X_train
-  x_scaled ∈ approximately [-3, +3] for most values
+  μ  = feature mean computed on X_train only
+  σ  = feature standard deviation computed on X_train only
+  x_scaled ∈ approximately [−3, +3] for most values
 ```
 
-**Critical detail:** The scaler is `fit` only on `X_train` and then `transform`-only applied to `X_test` and live inference inputs. Fitting on the full dataset would constitute **data leakage** — contaminating test evaluation with training distribution statistics.
+**Critical implementation detail:** The scaler is `fit` exclusively on `X_train`, then `transform`-only applied to `X_test` and all live inference inputs. Fitting on the full dataset would constitute **data leakage** — contaminating the test evaluation with training distribution statistics and producing an artificially optimistic R² score.
 
-The scaler and model are serialized together as a single `(model, scaler)` tuple in `glucose_model.pkl`, ensuring the identical normalization is applied at inference time.
+The scaler and model are serialized together as a single `(model, scaler)` tuple in `glucose_model.pkl`, ensuring the identical normalization parameters are always applied at inference time.
 
 ### Evaluation Metrics
 
@@ -157,56 +157,56 @@ The scaler and model are serialized together as a single `(model, scaler)` tuple
 R² = 1 − [Σ(yᵢ − ŷᵢ)²] / [Σ(yᵢ − ȳ)²]
 
 Interpretation:
-  R² = 1.0  → perfect prediction
-  R² = 0.0  → model predicts no better than predicting the mean
-  R² < 0.0  → model performs worse than mean prediction
+  R² = 1.0  → perfect prediction (zero residual variance)
+  R² = 0.0  → model predicts no better than the training mean
+  R² < 0.0  → model performs worse than predicting the mean
 ```
 
 **RMSE (Root Mean Squared Error):**
 ```
 RMSE = √[ (1/n) Σ(yᵢ − ŷᵢ)² ]
 
-Unit: mg/dL  — directly interpretable as average prediction error
+Unit: mg/dL — directly interpretable as average prediction error magnitude
 ```
 
 ---
 
 ## 📊 Model Comparison & Benchmarks
 
-The table below benchmarks Linear Regression against alternative regression approaches for clinical glucose prediction. Characteristics are based on established ML literature and implementation analysis.
+The table below benchmarks Linear Regression against standard alternative regressors for clinical glucose prediction. Characteristics are based on established ML literature and implementation analysis.
 
-| Model | Core Technique | Interpretable | Handles Non-linearity | Overfitting Risk | Relative Training Speed | Best For |
+| Model | Core Technique | Interpretable | Handles Non-linearity | Overfitting Risk | Training Speed | Best For |
 |---|---|---|---|---|---|---|
 | **Linear Regression ✅** | OLS closed-form | ✅ Fully | ❌ No | Low | Fastest | Baseline, transparent clinical use |
 | Ridge Regression | L2-penalized OLS | ✅ Fully | ❌ No | Very Low | Fast | Multicollinear features |
 | Lasso Regression | L1-penalized OLS | ✅ Fully | ❌ No | Very Low | Fast | Automatic feature selection |
 | Random Forest | Ensemble of decision trees | ⚠️ Partial (SHAP) | ✅ Yes | Medium | Moderate | Non-linear feature interactions |
-| Gradient Boosting | Sequential residual learners | ⚠️ Partial | ✅ Yes | Medium-High | Slow | Highest accuracy (tuned) |
-| SVR (RBF kernel) | Max-margin regression in kernel space | ❌ No | ✅ Yes | Low-Medium | Moderate | Small datasets, non-linear |
+| Gradient Boosting | Sequential residual learners | ⚠️ Partial | ✅ Yes | Medium–High | Slow | Highest accuracy when tuned |
+| SVR (RBF kernel) | Max-margin regression in kernel space | ❌ No | ✅ Yes | Low–Medium | Moderate | Small datasets, non-linear boundaries |
 | Neural Network (MLP) | Learned non-linear transformations | ❌ No | ✅ Yes | High | Slowest | Large datasets with deep interactions |
 
 ✅ Implemented in this project
 
-**Why this combination of features and model:**
+**Why this model for this problem:**
 
 ```
-                   Linear Reg   Ridge   Random Forest   Neural Net
-─────────────────────────────────────────────────────────────────────────
-Interpretable coeff   ✅          ✅         ❌              ❌
-No hyperparameter     ✅          ❌         ❌              ❌
-Clinically explainable ✅         ✅         ⚠️              ❌
-Handles 12 features   ✅          ✅         ✅              ✅
-Deployable on CPU     ✅          ✅         ✅              ✅
-No pretrained weights ✅          ✅         ✅              ❌
+                      Linear Reg   Ridge   Random Forest   Neural Net
+──────────────────────────────────────────────────────────────────────────
+Interpretable coeff      ✅          ✅          ❌              ❌
+No hyperparameter        ✅          ❌          ❌              ❌
+Clinically explainable   ✅          ✅          ⚠️              ❌
+Handles 12 features      ✅          ✅          ✅              ✅
+CPU deployable           ✅          ✅          ✅              ✅
+No pretrained weights    ✅          ✅          ✅              ❌
 ```
 
-Linear Regression satisfies every hard constraint (interpretability, no hyperparameter search, CPU-only deployment) and serves as the correct starting point before introducing model complexity.
+Linear Regression satisfies every hard constraint for a clinical baseline — full interpretability, zero hyperparameter search, CPU-only deployment — and is the correct starting point before introducing model complexity.
 
 ---
 
 ## 📉 Prediction Behaviour Across Patient Profiles
 
-The table below illustrates how predicted glucose varies across representative synthetic patient profiles, demonstrating that the model captures clinically plausible directional effects from the learned feature coefficients.
+The table below illustrates how predicted glucose varies across representative patient profiles, demonstrating that the model captures clinically plausible directional effects from the learned feature coefficients.
 
 | Profile | Age | BMI | Diabetes Flag | sysBP | Predicted Glucose | Interpretation |
 |---|---|---|---|---|---|---|
@@ -216,15 +216,15 @@ The table below illustrates how predicted glucose varies across representative s
 | Diabetic flag set | 55 | 31.0 | 1 | 145 | ~140–175 mg/dL | Consistent with diabetic range |
 | High cholesterol smoker | 50 | 27.4 | 0 | 138 | ~90–100 mg/dL | Lifestyle factors reflected |
 
-> **Note:** Exact values depend on the trained coefficients from a specific dataset run. Directional effects are consistent with the clinical literature.
+> **Note:** Exact values depend on the trained coefficients from a given dataset run. Directional effects are consistent with the clinical literature on glucose regulation.
 
-**Key observation:** The `diabetes` binary feature carries the largest positive coefficient — a known ground-truth relationship in the Framingham data. `age`, `BMI`, and `sysBP` also contribute meaningfully, consistent with clinical evidence on glucose regulation.
+**Key observation:** The `diabetes` binary feature carries the largest positive coefficient — a known ground-truth relationship in the Framingham data. `age`, `BMI`, and `sysBP` also contribute meaningfully, consistent with clinical evidence on metabolic health.
 
 ---
 
 ## 🔒 Feature Engineering & Leakage Prevention
 
-Feature selection was performed with explicit attention to **data leakage** — a critical failure mode in clinical ML where outcome-correlated variables inflate apparent model performance.
+Feature selection was performed with explicit attention to **data leakage** — a critical failure mode in clinical ML where outcome-correlated variables inflate apparent model performance without generalizing to unseen patients.
 
 **Features deliberately excluded:**
 
@@ -238,18 +238,18 @@ Feature selection was performed with explicit attention to **data leakage** — 
 
 | Feature | Type | Clinical Rationale |
 |---|---|---|
-| `male` | Binary | Biological sex influences insulin sensitivity |
-| `age` | Continuous | Glucose regulation declines with age |
-| `currentSmoker` | Binary | Smoking impairs insulin sensitivity |
-| `cigsPerDay` | Continuous | Dose-response: higher exposure → greater metabolic impact |
-| `BPMeds` | Binary | Antihypertensives have known metabolic side-effects |
-| `prevalentHyp` | Binary | Hypertension and insulin resistance frequently co-occur |
-| `diabetes` | Binary | Direct marker of glucose dysregulation |
-| `totChol` | Continuous | Dyslipidemia correlates with metabolic syndrome |
-| `sysBP` | Continuous | Systolic pressure reflects cardiovascular-metabolic load |
+| `male` | Binary | Biological sex influences insulin sensitivity and glucose metabolism |
+| `age` | Continuous | Glucose regulation capacity declines progressively with age |
+| `currentSmoker` | Binary | Smoking impairs insulin sensitivity and pancreatic function |
+| `cigsPerDay` | Continuous | Dose-response: higher exposure correlates with greater metabolic impact |
+| `BPMeds` | Binary | Several antihypertensives carry known metabolic and glycemic side-effects |
+| `prevalentHyp` | Binary | Hypertension and insulin resistance frequently co-occur in metabolic syndrome |
+| `diabetes` | Binary | Direct clinical marker of glucose dysregulation |
+| `totChol` | Continuous | Dyslipidemia correlates strongly with metabolic syndrome and insulin resistance |
+| `sysBP` | Continuous | Systolic pressure reflects overall cardiovascular-metabolic load |
 | `diaBP` | Continuous | Diastolic pressure — complementary hemodynamic indicator |
-| `BMI` | Continuous | Adiposity is a primary driver of insulin resistance |
-| `heartRate` | Continuous | Elevated resting HR reflects sympathetic nervous system activity |
+| `BMI` | Continuous | Adiposity is a primary driver of peripheral insulin resistance |
+| `heartRate` | Continuous | Elevated resting heart rate reflects sympathetic nervous system overactivation |
 
 ---
 
@@ -273,8 +273,8 @@ Glucose_Prediction_System/
 │   └── results.html                # Predicted glucose display page
 │
 ├── screenshots/
-│   ├── home_page.png               # Input interface screenshot
-│   ├── prediction_result.png       # Results page screenshot
+│   ├── home_page.png               # Input interface — full view
+│   ├── prediction_result.png       # Results page with predicted mg/dL value
 │   └── model_training_output.png   # Console output: R², RMSE, save confirmation
 │
 ├── train_model.py                  # Full training pipeline:
@@ -305,21 +305,13 @@ Glucose_Prediction_System/
 pip install -r requirements.txt
 ```
 
-**Dependencies:**
-```
-flask
-pandas
-numpy
-scikit-learn
-```
-
 ### 2. Train the Model
 
 ```bash
 python train_model.py
 ```
 
-Expected output:
+Expected console output:
 ```
 R² Score: 0.XXX
 RMSE: XX.XX
@@ -347,7 +339,7 @@ Fill in all 12 patient parameters across the four input categories:
 | Medical History | Blood Pressure Medication (Y/N), Hypertension (Y/N), Diabetes (Y/N) |
 | Clinical Measurements | Total Cholesterol, Systolic BP, Diastolic BP, BMI, Heart Rate |
 
-Click **Predict** — the result page displays the estimated blood glucose level in **mg/dL**.
+Click **Predict** — the results page displays the estimated blood glucose level in **mg/dL**.
 
 ---
 
@@ -373,13 +365,13 @@ Click **Predict** — the result page displays the estimated blood glucose level
 |---|---|---|
 | Regularized Regression | Ridge / Lasso with cross-validated λ tuning | Reduces overfitting on correlated clinical features |
 | Ensemble Models | Random Forest, Gradient Boosting (XGBoost / LightGBM) | Captures non-linear feature interactions |
-| SHAP Explainability | Feature importance waterfall plots per prediction | Per-patient clinical interpretability |
-| Risk Classification | Threshold prediction into Normal / Pre-diabetic / Diabetic | Actionable clinical output categories |
-| Histogram / Distribution Plots | Visualize feature distributions and residuals | Model diagnostics and data transparency |
-| Cross-Validation | K-Fold CV replacing single train/test split | More robust generalization estimate |
+| SHAP Explainability | Per-prediction feature importance waterfall plots | Clinical interpretability per patient |
+| Risk Classification | Threshold predictions into Normal / Pre-diabetic / Diabetic | Actionable output categories |
+| K-Fold Cross-Validation | Replace single train/test split with K-Fold CV | More robust generalization estimate |
+| Residual Diagnostics | Plot predicted vs actual, residual distribution | Model validation and bias detection |
 | Cloud Deployment | Render / Railway via `gunicorn app:app` | Publicly accessible web application |
 | Docker Containerization | `Dockerfile` + `docker-compose.yml` | Reproducible deployment environment |
-| Input Validation | Server-side range checks per clinical feature | Prevent out-of-distribution inference |
+| Input Validation | Server-side clinical range checks per feature | Prevent out-of-distribution inference |
 
 ---
 
