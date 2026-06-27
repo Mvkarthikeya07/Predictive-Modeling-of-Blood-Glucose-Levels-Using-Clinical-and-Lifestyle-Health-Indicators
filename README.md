@@ -2,7 +2,9 @@
 
 # Predictive Modeling of Blood Glucose Levels Using Clinical and Lifestyle Health Indicators
 
-<img src="https://readme-typing-svg.demolab.com font=Fira+Code&weight=700&size=26&pause=1000&color=C0392B&center=true&vCenter=true&width=900&lines=🩸+Blood+Glucose+Level+Prediction+System;Clinical+ML+%7C+Framingham+Study+%7C+Flask;End-to-End+Healthcare+ML+Deployment" alt="Typing SVG" />
+[![Typing SVG](https://readme-typing-svg.demolab.com/?font=Fira+Code&weight=700&size=26&pause=1000&color=C0392B&center=true&vCenter=true&width=900&lines=🩸+Blood+Glucose+Level+Prediction+System;Clinical+ML+%7C+Framingham+Study+%7C+Flask;End-to-End+Healthcare+ML+Deployment)](https://github.com/Mvkarthikeya07/Predictive-Modeling-of-Blood-Glucose-Levels-Using-Clinical-and-Lifestyle-Health-Indicators)
+
+</div>
 
 </div>
 
