@@ -370,6 +370,8 @@ This project was developed applying ML practices and professional standards from
 - Followed industry-standard workflows: clean train/inference separation, reproducible pipelines
 - Translated statistical ML models into accessible, user-facing decision-support tools
 
+🔗 **Certificate:** [View on LinkedIn](https://www.linkedin.com/posts/m-v-karthikeya-b26a2131b_machinelearning-artificialintelligence-datascience-activity-7421145705332760576-aka0?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFEhlw4BT-6V0rnLIZSzBIoK7YvV2QlbHLc)
+
 ---
 
 ## 🔮 Future Roadmap
